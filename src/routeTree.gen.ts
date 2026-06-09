@@ -9,38 +9,278 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrainingRouteImport } from './routes/training'
+import { Route as SportsScienceRouteImport } from './routes/sports-science'
+import { Route as RehabRouteImport } from './routes/rehab'
+import { Route as RegistryRouteImport } from './routes/registry'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as NutritionRouteImport } from './routes/nutrition'
+import { Route as MedicalRouteImport } from './routes/medical'
+import { Route as CopilotRouteImport } from './routes/copilot'
+import { Route as AssessmentsRouteImport } from './routes/assessments'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RegistryAthleteIdRouteImport } from './routes/registry.$athleteId'
+import { Route as MedicalBodyMapRouteImport } from './routes/medical.body-map'
+import { Route as TrainingSessionsNewRouteImport } from './routes/training.sessions.new'
 
+const TrainingRoute = TrainingRouteImport.update({
+  id: '/training',
+  path: '/training',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SportsScienceRoute = SportsScienceRouteImport.update({
+  id: '/sports-science',
+  path: '/sports-science',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RehabRoute = RehabRouteImport.update({
+  id: '/rehab',
+  path: '/rehab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegistryRoute = RegistryRouteImport.update({
+  id: '/registry',
+  path: '/registry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NutritionRoute = NutritionRouteImport.update({
+  id: '/nutrition',
+  path: '/nutrition',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MedicalRoute = MedicalRouteImport.update({
+  id: '/medical',
+  path: '/medical',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CopilotRoute = CopilotRouteImport.update({
+  id: '/copilot',
+  path: '/copilot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssessmentsRoute = AssessmentsRouteImport.update({
+  id: '/assessments',
+  path: '/assessments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegistryAthleteIdRoute = RegistryAthleteIdRouteImport.update({
+  id: '/$athleteId',
+  path: '/$athleteId',
+  getParentRoute: () => RegistryRoute,
+} as any)
+const MedicalBodyMapRoute = MedicalBodyMapRouteImport.update({
+  id: '/body-map',
+  path: '/body-map',
+  getParentRoute: () => MedicalRoute,
+} as any)
+const TrainingSessionsNewRoute = TrainingSessionsNewRouteImport.update({
+  id: '/sessions/new',
+  path: '/sessions/new',
+  getParentRoute: () => TrainingRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/assessments': typeof AssessmentsRoute
+  '/copilot': typeof CopilotRoute
+  '/medical': typeof MedicalRouteWithChildren
+  '/nutrition': typeof NutritionRoute
+  '/onboarding': typeof OnboardingRoute
+  '/registry': typeof RegistryRouteWithChildren
+  '/rehab': typeof RehabRoute
+  '/sports-science': typeof SportsScienceRoute
+  '/training': typeof TrainingRouteWithChildren
+  '/medical/body-map': typeof MedicalBodyMapRoute
+  '/registry/$athleteId': typeof RegistryAthleteIdRoute
+  '/training/sessions/new': typeof TrainingSessionsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/assessments': typeof AssessmentsRoute
+  '/copilot': typeof CopilotRoute
+  '/medical': typeof MedicalRouteWithChildren
+  '/nutrition': typeof NutritionRoute
+  '/onboarding': typeof OnboardingRoute
+  '/registry': typeof RegistryRouteWithChildren
+  '/rehab': typeof RehabRoute
+  '/sports-science': typeof SportsScienceRoute
+  '/training': typeof TrainingRouteWithChildren
+  '/medical/body-map': typeof MedicalBodyMapRoute
+  '/registry/$athleteId': typeof RegistryAthleteIdRoute
+  '/training/sessions/new': typeof TrainingSessionsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/assessments': typeof AssessmentsRoute
+  '/copilot': typeof CopilotRoute
+  '/medical': typeof MedicalRouteWithChildren
+  '/nutrition': typeof NutritionRoute
+  '/onboarding': typeof OnboardingRoute
+  '/registry': typeof RegistryRouteWithChildren
+  '/rehab': typeof RehabRoute
+  '/sports-science': typeof SportsScienceRoute
+  '/training': typeof TrainingRouteWithChildren
+  '/medical/body-map': typeof MedicalBodyMapRoute
+  '/registry/$athleteId': typeof RegistryAthleteIdRoute
+  '/training/sessions/new': typeof TrainingSessionsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/analytics'
+    | '/assessments'
+    | '/copilot'
+    | '/medical'
+    | '/nutrition'
+    | '/onboarding'
+    | '/registry'
+    | '/rehab'
+    | '/sports-science'
+    | '/training'
+    | '/medical/body-map'
+    | '/registry/$athleteId'
+    | '/training/sessions/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/analytics'
+    | '/assessments'
+    | '/copilot'
+    | '/medical'
+    | '/nutrition'
+    | '/onboarding'
+    | '/registry'
+    | '/rehab'
+    | '/sports-science'
+    | '/training'
+    | '/medical/body-map'
+    | '/registry/$athleteId'
+    | '/training/sessions/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/analytics'
+    | '/assessments'
+    | '/copilot'
+    | '/medical'
+    | '/nutrition'
+    | '/onboarding'
+    | '/registry'
+    | '/rehab'
+    | '/sports-science'
+    | '/training'
+    | '/medical/body-map'
+    | '/registry/$athleteId'
+    | '/training/sessions/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  AssessmentsRoute: typeof AssessmentsRoute
+  CopilotRoute: typeof CopilotRoute
+  MedicalRoute: typeof MedicalRouteWithChildren
+  NutritionRoute: typeof NutritionRoute
+  OnboardingRoute: typeof OnboardingRoute
+  RegistryRoute: typeof RegistryRouteWithChildren
+  RehabRoute: typeof RehabRoute
+  SportsScienceRoute: typeof SportsScienceRoute
+  TrainingRoute: typeof TrainingRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/training': {
+      id: '/training'
+      path: '/training'
+      fullPath: '/training'
+      preLoaderRoute: typeof TrainingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sports-science': {
+      id: '/sports-science'
+      path: '/sports-science'
+      fullPath: '/sports-science'
+      preLoaderRoute: typeof SportsScienceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rehab': {
+      id: '/rehab'
+      path: '/rehab'
+      fullPath: '/rehab'
+      preLoaderRoute: typeof RehabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/registry': {
+      id: '/registry'
+      path: '/registry'
+      fullPath: '/registry'
+      preLoaderRoute: typeof RegistryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nutrition': {
+      id: '/nutrition'
+      path: '/nutrition'
+      fullPath: '/nutrition'
+      preLoaderRoute: typeof NutritionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/medical': {
+      id: '/medical'
+      path: '/medical'
+      fullPath: '/medical'
+      preLoaderRoute: typeof MedicalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/copilot': {
+      id: '/copilot'
+      path: '/copilot'
+      fullPath: '/copilot'
+      preLoaderRoute: typeof CopilotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assessments': {
+      id: '/assessments'
+      path: '/assessments'
+      fullPath: '/assessments'
+      preLoaderRoute: typeof AssessmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +288,78 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/registry/$athleteId': {
+      id: '/registry/$athleteId'
+      path: '/$athleteId'
+      fullPath: '/registry/$athleteId'
+      preLoaderRoute: typeof RegistryAthleteIdRouteImport
+      parentRoute: typeof RegistryRoute
+    }
+    '/medical/body-map': {
+      id: '/medical/body-map'
+      path: '/body-map'
+      fullPath: '/medical/body-map'
+      preLoaderRoute: typeof MedicalBodyMapRouteImport
+      parentRoute: typeof MedicalRoute
+    }
+    '/training/sessions/new': {
+      id: '/training/sessions/new'
+      path: '/sessions/new'
+      fullPath: '/training/sessions/new'
+      preLoaderRoute: typeof TrainingSessionsNewRouteImport
+      parentRoute: typeof TrainingRoute
+    }
   }
 }
 
+interface MedicalRouteChildren {
+  MedicalBodyMapRoute: typeof MedicalBodyMapRoute
+}
+
+const MedicalRouteChildren: MedicalRouteChildren = {
+  MedicalBodyMapRoute: MedicalBodyMapRoute,
+}
+
+const MedicalRouteWithChildren =
+  MedicalRoute._addFileChildren(MedicalRouteChildren)
+
+interface RegistryRouteChildren {
+  RegistryAthleteIdRoute: typeof RegistryAthleteIdRoute
+}
+
+const RegistryRouteChildren: RegistryRouteChildren = {
+  RegistryAthleteIdRoute: RegistryAthleteIdRoute,
+}
+
+const RegistryRouteWithChildren = RegistryRoute._addFileChildren(
+  RegistryRouteChildren,
+)
+
+interface TrainingRouteChildren {
+  TrainingSessionsNewRoute: typeof TrainingSessionsNewRoute
+}
+
+const TrainingRouteChildren: TrainingRouteChildren = {
+  TrainingSessionsNewRoute: TrainingSessionsNewRoute,
+}
+
+const TrainingRouteWithChildren = TrainingRoute._addFileChildren(
+  TrainingRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  AssessmentsRoute: AssessmentsRoute,
+  CopilotRoute: CopilotRoute,
+  MedicalRoute: MedicalRouteWithChildren,
+  NutritionRoute: NutritionRoute,
+  OnboardingRoute: OnboardingRoute,
+  RegistryRoute: RegistryRouteWithChildren,
+  RehabRoute: RehabRoute,
+  SportsScienceRoute: SportsScienceRoute,
+  TrainingRoute: TrainingRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
