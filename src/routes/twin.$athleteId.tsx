@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DigitalTwin } from "@/components/digital-twin";
 
-export const Route = createFileRoute("/registry/$athleteId/twin")({
+export const Route = createFileRoute("/twin/$athleteId")({
   head: () => ({ meta: [{ title: "Digital Twin · USI" }] }),
   component: TwinPage,
 });
