@@ -1,14 +1,16 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { useRole, ROLES } from "@/lib/rbac";
+import { useRole, ROLES, ROLE_HOME } from "@/lib/rbac";
+import type { Role } from "@/data/seed";
 import { useUI } from "@/store/ui";
 import { federations, states, academies, teams } from "@/data/seed";
 import { ChevronRight, Bell, Search, Sparkles } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
 export function TopBar() {
   const { role, setRole } = useRole();
+  const navigate = useNavigate();
   const { scope, setScope } = useUI();
   const fed = federations[0];
   const state = states.find((s) => s.id === scope.stateId);
@@ -68,7 +70,7 @@ export function TopBar() {
         />
       </div>
 
-      <Select value={role} onValueChange={(v) => setRole(v as never)}>
+      <Select value={role} onValueChange={(v) => { const r = v as Role; setRole(r); navigate({ to: ROLE_HOME[r] }); }}>
         <SelectTrigger className="h-7 text-[12px] w-44 bg-input/60 border-border">
           <SelectValue />
         </SelectTrigger>
