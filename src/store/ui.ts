@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type PanelKind = "athlete" | "injury" | "session" | null;
+type PanelKind = "athlete" | "injury" | "session" | "case" | null;
 
 interface UIState {
   panelKind: PanelKind;

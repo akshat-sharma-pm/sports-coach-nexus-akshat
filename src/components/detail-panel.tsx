@@ -2,13 +2,20 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "
 import { useUI } from "@/store/ui";
 import { getAthlete, injuries, teamOf, academyOf, stateOf } from "@/data/seed";
 import { acwr, readinessScore, injuryRiskScore, riskLevel, recommend } from "@/lib/ai";
+import { riskBreakdown } from "@/lib/ai-engines";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkline } from "@/components/sparkline";
 import { Link } from "@tanstack/react-router";
+import { RiskEngineCard } from "@/components/risk-engine-card";
+import { RTPAdvisor } from "@/components/rtp-advisor";
+import { CaseTimeline } from "@/components/case-timeline";
+import { useCases } from "@/store/cases";
+import { ReportIssueDialog } from "@/components/report-issue-dialog";
 
 export function DetailPanel() {
   const { panelKind, panelId, closePanel } = useUI();
+  const cases = useCases(s => s.cases);
   const open = panelKind !== null;
 
   let content: React.ReactNode = null;
@@ -19,6 +26,7 @@ export function DetailPanel() {
       const ready = readinessScore(a);
       const r = acwr(a);
       const athInjuries = injuries.filter((i) => i.athleteId === a.id);
+      const athCase = cases.find(c => c.athleteId === a.id && c.status !== "Cleared" && c.status !== "Rejected");
       content = (
         <>
           <SheetHeader className="px-5 py-4 border-b border-border">
@@ -47,6 +55,7 @@ export function DetailPanel() {
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="medical">Medical</TabsTrigger>
               <TabsTrigger value="ai">AI</TabsTrigger>
+              {athCase && <TabsTrigger value="rtp">RTP</TabsTrigger>}
             </TabsList>
             <TabsContent value="overview" className="space-y-4 pt-3">
               <Trend label="Training load (60d sRPE)" data={a.load} color="var(--color-chart-1)" />
@@ -55,6 +64,9 @@ export function DetailPanel() {
               <Trend label="Wellness" data={a.wellness} color="var(--color-chart-5)" />
             </TabsContent>
             <TabsContent value="medical" className="space-y-2 pt-3">
+              <div className="flex justify-end">
+                <ReportIssueDialog athleteId={a.id} />
+              </div>
               {athInjuries.length === 0 && <p className="text-xs text-muted-foreground">No recorded injuries.</p>}
               {athInjuries.map((i) => (
                 <div key={i.id} className="surface p-3 text-[12px]">
@@ -63,19 +75,28 @@ export function DetailPanel() {
                 </div>
               ))}
             </TabsContent>
-            <TabsContent value="ai" className="space-y-2 pt-3">
+            <TabsContent value="ai" className="space-y-3 pt-3">
+              <RiskEngineCard data={riskBreakdown(a)} />
               <div className="text-[11px] uppercase tracking-wider text-muted-foreground">AI recommendations</div>
-              {recommend(a).map((r, i) => (
+              {recommend(a).map((rec, i) => (
                 <div key={i} className="surface p-3 text-[12px] flex gap-2">
-                  <span className="text-primary">›</span>{r}
+                  <span className="text-primary">›</span>{rec}
                 </div>
               ))}
             </TabsContent>
+            {athCase && (
+              <TabsContent value="rtp" className="space-y-3 pt-3">
+                <RTPAdvisor caseId={athCase.id} />
+                <CaseTimeline caseId={athCase.id} />
+              </TabsContent>
+            )}
           </Tabs>
 
-          <div className="p-4 border-t border-border">
+          <div className="p-4 border-t border-border flex justify-between">
             <Link to="/registry/$athleteId" params={{ athleteId: a.id }} onClick={closePanel}
               className="text-[12px] text-primary hover:underline">Open full athlete profile →</Link>
+            <Link to="/twin/$athleteId" params={{ athleteId: a.id }} onClick={closePanel}
+              className="text-[12px] text-primary hover:underline">Open Digital Twin →</Link>
           </div>
         </>
       );
@@ -84,6 +105,7 @@ export function DetailPanel() {
     const i = injuries.find((x) => x.id === panelId);
     if (i) {
       const a = getAthlete(i.athleteId);
+      const c = cases.find(x => x.athleteId === i.athleteId);
       content = (
         <>
           <SheetHeader className="px-5 py-4 border-b border-border">
@@ -95,15 +117,30 @@ export function DetailPanel() {
             <Row k="Status" v={i.status} />
             <Row k="Days out" v={`${i.daysOut} days`} />
             <Row k="Athlete" v={a?.name ?? "—"} />
-            <div className="surface p-3 mt-3">
-              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Rehab plan</div>
-              <ol className="list-decimal list-inside space-y-1">
-                <li>Phase 1 — Pain-free ROM, isometrics</li>
-                <li>Phase 2 — Eccentric loading, single-leg control</li>
-                <li>Phase 3 — Sport-specific reintegration</li>
-                <li>Phase 4 — Return-to-play clearance</li>
-              </ol>
+            {c && <RTPAdvisor caseId={c.id} />}
+            {c && <CaseTimeline caseId={c.id} />}
+          </div>
+        </>
+      );
+    }
+  } else if (panelKind === "case" && panelId) {
+    const c = cases.find(x => x.id === panelId);
+    if (c) {
+      const a = getAthlete(c.athleteId);
+      content = (
+        <>
+          <SheetHeader className="px-5 py-4 border-b border-border">
+            <SheetTitle className="text-base">{a?.name} — Case</SheetTitle>
+            <SheetDescription className="font-mono text-[11px]">{c.id} · {c.site} · {c.status}</SheetDescription>
+          </SheetHeader>
+          <div className="p-5 space-y-3 text-[12px]">
+            <div className="surface p-3">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Symptoms</div>
+              <div>{c.symptoms}</div>
+              {c.diagnosis && <div className="mt-2 pt-2 border-t border-border"><div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Diagnosis</div>{c.diagnosis}</div>}
             </div>
+            <RTPAdvisor caseId={c.id} />
+            <CaseTimeline caseId={c.id} />
           </div>
         </>
       );
