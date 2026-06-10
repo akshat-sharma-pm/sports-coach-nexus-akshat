@@ -1,73 +1,100 @@
+# USI — Role Workspaces, AI Engines & Injury→RTP Flow
 
-# Unified Sports Interface (USI) — Build Plan
+Builds on the existing shell, seed data, RBAC, and detail panel. No backend; deterministic mock outputs; all state via Zustand so actions, approvals, and stage transitions feel real.
 
-A production-grade-feeling enterprise SaaS prototype for athlete management. Frontend-only with realistic seeded data, mocked role switching, and deterministic simulated AI outputs.
+## 1. Role-specific workspaces (5 new routes)
 
-## Design system
+New routes under `/workspace/*`, auto-selected when the role-switcher changes (TopBar redirects to that role's workspace; manual nav still works).
 
-- **Theme:** Dark, dense, operational — Linear × Bloomberg terminal feel. Not marketing.
-- **Palette (oklch in `src/styles.css`):** near-black background (`oklch(0.14 0.01 250)`), elevated surfaces, hairline borders, electric cyan primary, amber/rose for risk states, emerald for healthy.
-- **Type:** JetBrains Mono for numerics/IDs, Inter for UI. Loaded via `<link>` in `__root.tsx`.
-- **Components:** shadcn (Sidebar, Sheet for slide-overs, Dialog, Tabs, Table, Command, Tooltip, Progress, Chart via recharts).
-- **Density:** compact spacing, monospaced metrics, status pills, sparkline cards, drill-down tables.
-
-## App shell
-
-- `SidebarProvider` + collapsible icon sidebar grouping all 13 modules.
-- Top bar: org breadcrumb (Federation › State › Academy › Team › Athlete), global command palette (⌘K), role switcher (Athlete / Coach / Physio / Sports Scientist / Nutritionist / Federation Admin), notifications, AI Copilot toggle.
-- Right-edge slide-over panel (Sheet) for athlete/session/injury detail across modules.
-- Role context (React context + localStorage) gates nav items and action buttons.
-
-## Routes (TanStack file-based)
-
-```
-/                              → AI Command Center (default)
-/registry                      → Athlete Registry
-/registry/$athleteId           → Athlete 360 profile (tabs: Overview, Training, Medical, Nutrition, Assessments)
-/onboarding                    → Onboarding workflow board
-/training                      → Periodisation calendar
-/training/sessions/new         → Session Builder
-/medical                       → Medical & Injury Intelligence
-/medical/body-map              → Interactive Human Body Map
-/rehab                         → Rehab Workflow (Kanban)
-/sports-science                → Sports Science Dashboard
-/nutrition                     → Nutrition Management
-/assessments                   → Assessment & Talent ID
-/analytics                     → Analytics & BI
-/copilot                       → AI Copilot (full chat)
+```text
+/workspace/coach          → Coach Workspace
+/workspace/scientist      → Sports Scientist Workspace
+/workspace/physio         → Physiotherapist Workspace
+/workspace/nutritionist   → Nutritionist Workspace
+/workspace/admin          → Federation Admin Workspace
 ```
 
-Each route file gets its own `head()` metadata. Index is the AI Command Center, not a placeholder.
+Each workspace = dense 3-column operational console (not marketing):
 
-## Module specs (operational, not marketing)
+- **Coach** — Today's session card, squad readiness heatmap, ACWR watchlist, drag-to-adjust load slider, "Approve session plan" action, AI-suggested substitutions.
+- **Sports Scientist** — Live wearables feed, HRV/sleep/load trend grid, force-plate asymmetry table, anomaly queue, "Flag for review" + "Push to coach" actions.
+- **Physio** — Inbox of athlete-reported issues, triage queue, active rehab cases by phase, RTP approvals pending, body-map mini.
+- **Nutritionist** — Compliance leaderboard, macro deficits, meal-plan assignments, hydration alerts, "Send plan" action.
+- **Federation Admin** — Org KPIs (athletes, injuries, cost/athlete, talent pipeline), state/academy rollups, user/role management table, audit log, broadcast announcement.
 
-1. **AI Command Center** — KPI strip (athletes active, avg readiness, injury risk count, sessions today), AI insights feed, risk-ranked athlete watchlist, today's federation-wide schedule heatmap.
-2. **Athlete Registry** — virtualized table with filters (federation/state/academy/team/sport/status), bulk actions, slide-over 360 profile, export.
-3. **Onboarding** — multi-step Kanban (Invite → Docs → Medical clearance → Baseline tests → Active), per-athlete progress.
-4. **Training & Periodisation** — macro/meso/micro cycle calendar grid, load (ACWR) per athlete, drag-to-reschedule (visual only).
-5. **Session Builder** — left exercise library, center session timeline (warmup/main/cooldown blocks), right parameters (sets/reps/load/RPE), template save.
-6. **Medical & Injury Intelligence** — injury log table, severity/status, AI-predicted high-risk athletes (deterministic scoring from load + sleep + prior injury), trend charts.
-7. **Body Map** — clickable SVG anterior/posterior figure, regions tinted by injury density, click → slide-over with injury history at that site.
-8. **Rehab Workflow** — Kanban (Acute / Subacute / Strength / Return-to-play / Cleared), per-athlete milestones, daily compliance.
-9. **Sports Science Dashboard** — readiness (HRV, sleep, sRPE, wellness), GPS load, force-plate metrics, athlete comparison chart.
-10. **Nutrition** — meal plan grid, macro targets vs actuals, hydration, supplement stack, compliance score.
-11. **Assessment & Talent ID** — test battery results (sprint, jump, strength), percentile bars, talent score, scouting shortlist.
-12. **Analytics & BI** — pivot-style drill-down (Federation → State → Academy → Team → Athlete), multi-chart dashboards, exportable.
-13. **AI Copilot** — chat UI with canned operational prompts ("Who is at risk this week?", "Build a deload for Team U19"), deterministic markdown responses generated from seed data.
+Sidebar gets a new "Workspaces" group; RBAC gates each route to its role + admin.
 
-## Data & logic
+## 2. AI engines (deterministic, in `src/lib/ai.ts` + new `src/lib/ai-engines.ts`)
 
-- `src/data/seed.ts` — federations, states, academies, teams, ~120 athletes with realistic Indian/global names, sports (athletics, football, hockey, swimming, weightlifting), full longitudinal mocks (training load 60d, wellness, injuries, nutrition, assessments).
-- `src/lib/ai.ts` — pure functions: `readinessScore`, `injuryRiskScore` (ACWR + sleep deficit + prior injury weight), `recommend(athlete)`, `copilotReply(prompt, ctx)`.
-- `src/lib/rbac.ts` — role → allowed routes/actions map, `useRole()` hook.
-- `src/store/ui.ts` — Zustand for slide-over panel state, selected athlete, filters.
+- **AI Risk Engine** — extends existing `injuryRiskScore` with contributing-factor breakdown (load, sleep, prior, wellness, asymmetry). Output: score, level, top 3 drivers, recommended mitigations. New `RiskEngineCard` component.
+- **AI Readiness Engine** — extends `readinessScore`; daily traffic-light per athlete with HRV/sleep/sRPE/soreness contributions and confidence band. New `ReadinessBoard` component.
+- **AI Return-To-Play Advisor** — given an injury: predicted RTP date, current phase, gating criteria checklist (pain, ROM, strength symmetry, sport-specific test), pass/fail per criterion, recommended next session. New `RTPAdvisor` component, embedded in detail panel + rehab cards.
 
-## Tech notes
+All three are pure functions of seed data → memoized. Surfaced in Command Center, workspaces, and detail panel.
 
-- Recharts for all charts. Lucide icons. date-fns. Zustand.
-- No backend. No auth. No Lovable Cloud. No AI Gateway.
-- All interactions are clickable and update local state (filters, kanban moves, slide-overs, role switch).
+## 3. Athlete Digital Twin
 
-## Scope of first turn
+New route `/registry/$athleteId/twin` (tab inside existing Athlete 360) and a `DigitalTwin` component:
 
-Ship the full shell + all 13 routes with real (mock-data-backed) screens. Depth priority: Command Center, Registry+360, Training, Body Map, Sports Science, Analytics, Copilot get the richest UI; Onboarding, Session Builder, Rehab, Nutrition, Assessments, Medical get functional but lighter screens. Polish passes follow in later turns.
+- Left: rotatable SVG body silhouette (reuses body-map) with overlay layers (load, soreness, injury history, asymmetry).
+- Middle: live vitals strip (HR, HRV, sleep, hydration, RPE) sourced from "wearables".
+- Right: tabbed timeline (Training | Medical | Nutrition | Wellness) — unified longitudinal record.
+- Bottom: AI panel — Risk, Readiness, RTP (if injured), Recommendations.
+
+Layer toggles + date scrubber update overlays.
+
+## 4. End-to-end flow: Report → Review → Rehab → RTP
+
+State machine in new `src/store/cases.ts` (Zustand). Each "case" = `{ id, athleteId, reportedAt, symptoms, status, assignedPhysioId, diagnosis, rehabPhase, rtpCriteria, approvals[] }`. Statuses: `Reported → Triaged → Diagnosed → Rehab(Acute|Subacute|Strength|RTP) → RTP-Review → Cleared`.
+
+Demonstrable clickable flow:
+
+1. **Athlete role** → `/medical` → "Report Issue" button → modal (region via body-map click, severity, pain scale, notes) → creates case (status `Reported`) → toast + appears in Physio inbox.
+2. **Physio role** → workspace inbox → click case → slide-over with triage form → "Accept & Diagnose" → status `Diagnosed`, RTP advisor initializes criteria, case lands in Rehab Kanban Acute column.
+3. **Rehab workflow** → existing Kanban now reads from `cases` store; drag card across phases updates status; each phase shows RTP criteria progress.
+4. **RTP Approval** → in final column, "Request RTP Clearance" → status `RTP-Review`; requires sign-off from Physio + Coach (two-step approval, recorded in `approvals[]` with role + timestamp); admin can override. On both approvals → `Cleared`, athlete returns to active roster, audit entry written.
+
+Activity feed component (`CaseTimeline`) shows every transition, visible in detail panel.
+
+## 5. Wearables & GPS integrations panel
+
+New route `/integrations` + a compact widget reused in Sports Scientist workspace.
+
+- Provider tiles: **Garmin**, **Catapult GPS**, **Polar**, **Generic Wearables (Apple/WHOOP/Oura)**.
+- Each tile: status (Connected/Syncing/Error), last sync timestamp, device count, data streams listed (HR, HRV, GPS, accel, sleep), "Sync now" / "Disconnect" / "Configure" actions (mocked, animate sync, update last-sync timestamp).
+- Per-athlete device assignment table.
+- Incoming data preview (last 10 metrics with provider badge), feeding the Digital Twin vitals strip and Sports Scientist live feed.
+
+Data generated deterministically from seed; "Sync now" advances the mock clock.
+
+## 6. Cross-cutting
+
+- New approval primitive: `ApprovalChip` (pending/approved/rejected, who, when) used in RTP and session-plan flows.
+- Toast notifications via existing `sonner` on every state change.
+- Audit log appended to `cases` store; visible in Federation Admin workspace.
+- Role-switcher in TopBar deep-links to the relevant workspace on change.
+
+## Technical section
+
+**New files**
+- `src/routes/workspace.coach.tsx`, `workspace.scientist.tsx`, `workspace.physio.tsx`, `workspace.nutritionist.tsx`, `workspace.admin.tsx`
+- `src/routes/integrations.tsx`
+- `src/routes/registry.$athleteId.twin.tsx` (or tab inside existing detail route)
+- `src/components/digital-twin.tsx`, `risk-engine-card.tsx`, `readiness-board.tsx`, `rtp-advisor.tsx`, `case-timeline.tsx`, `approval-chip.tsx`, `report-issue-dialog.tsx`, `integration-tile.tsx`
+- `src/lib/ai-engines.ts` (risk factors, readiness contributions, RTP criteria evaluator)
+- `src/store/cases.ts` (Zustand: cases[], actions report/triage/diagnose/advancePhase/requestRTP/approveRTP)
+- `src/data/integrations.ts` (provider configs, mock sync state)
+
+**Edits**
+- `src/lib/rbac.tsx` — add workspace keys to `ROLE_ACCESS`.
+- `src/components/app-sidebar.tsx` — add "Workspaces" + "Integrations" nav groups.
+- `src/components/top-bar.tsx` — on role change, `navigate` to that role's workspace.
+- `src/routes/rehab.tsx` — read from `cases` store instead of static injuries.
+- `src/routes/medical.tsx` — add "Report Issue" CTA visible to athlete role.
+- `src/components/detail-panel.tsx` — embed RTP Advisor + Case Timeline when injury/case selected.
+
+**Determinism**
+All engine outputs are pure functions of athlete + case state, memoized via `useMemo`. No randomness at render time.
+
+**Scope of first build**
+All five workspaces, all three AI engines, Digital Twin route, full Report→RTP state machine wired through Medical + Physio Workspace + Rehab Kanban + Detail Panel, Integrations route with 4 providers. No backend, no auth, no Lovable Cloud.
