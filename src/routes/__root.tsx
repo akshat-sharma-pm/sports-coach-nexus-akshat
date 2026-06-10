@@ -45,8 +45,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "USI — Unified Sports Interface" },
+      { title: "Unified Sports Interface (USI) – Athlete Management System (" },
       { name: "description", content: "Enterprise athlete management for federations, academies, coaches, physios, and sports scientists." },
+      { property: "og:title", content: "Unified Sports Interface (USI) – Athlete Management System (" },
+      { name: "twitter:title", content: "Unified Sports Interface (USI) – Athlete Management System (" },
+      { property: "og:description", content: "Enterprise athlete management for federations, academies, coaches, physios, and sports scientists." },
+      { name: "twitter:description", content: "Enterprise athlete management for federations, academies, coaches, physios, and sports scientists." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ce83d29d-1d08-4da7-b998-3d167edb0a63/id-preview-b092afca--d3ab28a3-778d-4b09-9079-5844e8982316.lovable.app-1781073773086.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ce83d29d-1d08-4da7-b998-3d167edb0a63/id-preview-b092afca--d3ab28a3-778d-4b09-9079-5844e8982316.lovable.app-1781073773086.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
