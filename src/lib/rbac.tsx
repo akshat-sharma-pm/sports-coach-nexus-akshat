@@ -25,16 +25,25 @@ export function RoleProvider({ children }: { children: ReactNode }) {
 
 export const useRole = () => useContext(RoleCtx);
 
-// Map role → modules visible
 export const ROLE_ACCESS: Record<Role, string[]> = {
-  admin:        ["command","registry","onboarding","training","medical","body-map","rehab","sports-science","nutrition","assessments","analytics","copilot"],
-  coach:        ["command","registry","training","sessions","sports-science","assessments","copilot","analytics"],
-  physio:       ["command","registry","medical","body-map","rehab","copilot"],
-  scientist:    ["command","registry","sports-science","analytics","copilot"],
-  nutritionist: ["command","registry","nutrition","copilot"],
+  admin:        ["command","registry","onboarding","training","sessions","medical","body-map","rehab","sports-science","nutrition","assessments","analytics","copilot","integrations","ws-coach","ws-scientist","ws-physio","ws-nutritionist","ws-admin"],
+  coach:        ["command","registry","training","sessions","sports-science","assessments","copilot","analytics","integrations","ws-coach"],
+  physio:       ["command","registry","medical","body-map","rehab","copilot","ws-physio"],
+  scientist:    ["command","registry","sports-science","analytics","copilot","integrations","ws-scientist"],
+  nutritionist: ["command","registry","nutrition","copilot","ws-nutritionist"],
   athlete:      ["command","training","medical","nutrition","copilot"],
 };
 
 export function can(role: Role, key: string) {
   return ROLE_ACCESS[role].includes(key);
 }
+
+// Default workspace route per role
+export const ROLE_HOME: Record<Role, string> = {
+  admin: "/workspace/admin",
+  coach: "/workspace/coach",
+  physio: "/workspace/physio",
+  scientist: "/workspace/scientist",
+  nutritionist: "/workspace/nutritionist",
+  athlete: "/medical",
+};

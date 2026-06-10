@@ -16,10 +16,17 @@ import { Route as RegistryRouteImport } from './routes/registry'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as NutritionRouteImport } from './routes/nutrition'
 import { Route as MedicalRouteImport } from './routes/medical'
+import { Route as IntegrationsRouteImport } from './routes/integrations'
 import { Route as CopilotRouteImport } from './routes/copilot'
 import { Route as AssessmentsRouteImport } from './routes/assessments'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WorkspaceScientistRouteImport } from './routes/workspace.scientist'
+import { Route as WorkspacePhysioRouteImport } from './routes/workspace.physio'
+import { Route as WorkspaceNutritionistRouteImport } from './routes/workspace.nutritionist'
+import { Route as WorkspaceCoachRouteImport } from './routes/workspace.coach'
+import { Route as WorkspaceAdminRouteImport } from './routes/workspace.admin'
+import { Route as TwinAthleteIdRouteImport } from './routes/twin.$athleteId'
 import { Route as RegistryAthleteIdRouteImport } from './routes/registry.$athleteId'
 import { Route as MedicalBodyMapRouteImport } from './routes/medical.body-map'
 import { Route as TrainingSessionsNewRouteImport } from './routes/training.sessions.new'
@@ -59,6 +66,11 @@ const MedicalRoute = MedicalRouteImport.update({
   path: '/medical',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntegrationsRoute = IntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CopilotRoute = CopilotRouteImport.update({
   id: '/copilot',
   path: '/copilot',
@@ -77,6 +89,36 @@ const AnalyticsRoute = AnalyticsRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkspaceScientistRoute = WorkspaceScientistRouteImport.update({
+  id: '/workspace/scientist',
+  path: '/workspace/scientist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkspacePhysioRoute = WorkspacePhysioRouteImport.update({
+  id: '/workspace/physio',
+  path: '/workspace/physio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkspaceNutritionistRoute = WorkspaceNutritionistRouteImport.update({
+  id: '/workspace/nutritionist',
+  path: '/workspace/nutritionist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkspaceCoachRoute = WorkspaceCoachRouteImport.update({
+  id: '/workspace/coach',
+  path: '/workspace/coach',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkspaceAdminRoute = WorkspaceAdminRouteImport.update({
+  id: '/workspace/admin',
+  path: '/workspace/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TwinAthleteIdRoute = TwinAthleteIdRouteImport.update({
+  id: '/twin/$athleteId',
+  path: '/twin/$athleteId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegistryAthleteIdRoute = RegistryAthleteIdRouteImport.update({
@@ -100,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AnalyticsRoute
   '/assessments': typeof AssessmentsRoute
   '/copilot': typeof CopilotRoute
+  '/integrations': typeof IntegrationsRoute
   '/medical': typeof MedicalRouteWithChildren
   '/nutrition': typeof NutritionRoute
   '/onboarding': typeof OnboardingRoute
@@ -109,6 +152,12 @@ export interface FileRoutesByFullPath {
   '/training': typeof TrainingRouteWithChildren
   '/medical/body-map': typeof MedicalBodyMapRoute
   '/registry/$athleteId': typeof RegistryAthleteIdRoute
+  '/twin/$athleteId': typeof TwinAthleteIdRoute
+  '/workspace/admin': typeof WorkspaceAdminRoute
+  '/workspace/coach': typeof WorkspaceCoachRoute
+  '/workspace/nutritionist': typeof WorkspaceNutritionistRoute
+  '/workspace/physio': typeof WorkspacePhysioRoute
+  '/workspace/scientist': typeof WorkspaceScientistRoute
   '/training/sessions/new': typeof TrainingSessionsNewRoute
 }
 export interface FileRoutesByTo {
@@ -116,6 +165,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AnalyticsRoute
   '/assessments': typeof AssessmentsRoute
   '/copilot': typeof CopilotRoute
+  '/integrations': typeof IntegrationsRoute
   '/medical': typeof MedicalRouteWithChildren
   '/nutrition': typeof NutritionRoute
   '/onboarding': typeof OnboardingRoute
@@ -125,6 +175,12 @@ export interface FileRoutesByTo {
   '/training': typeof TrainingRouteWithChildren
   '/medical/body-map': typeof MedicalBodyMapRoute
   '/registry/$athleteId': typeof RegistryAthleteIdRoute
+  '/twin/$athleteId': typeof TwinAthleteIdRoute
+  '/workspace/admin': typeof WorkspaceAdminRoute
+  '/workspace/coach': typeof WorkspaceCoachRoute
+  '/workspace/nutritionist': typeof WorkspaceNutritionistRoute
+  '/workspace/physio': typeof WorkspacePhysioRoute
+  '/workspace/scientist': typeof WorkspaceScientistRoute
   '/training/sessions/new': typeof TrainingSessionsNewRoute
 }
 export interface FileRoutesById {
@@ -133,6 +189,7 @@ export interface FileRoutesById {
   '/analytics': typeof AnalyticsRoute
   '/assessments': typeof AssessmentsRoute
   '/copilot': typeof CopilotRoute
+  '/integrations': typeof IntegrationsRoute
   '/medical': typeof MedicalRouteWithChildren
   '/nutrition': typeof NutritionRoute
   '/onboarding': typeof OnboardingRoute
@@ -142,6 +199,12 @@ export interface FileRoutesById {
   '/training': typeof TrainingRouteWithChildren
   '/medical/body-map': typeof MedicalBodyMapRoute
   '/registry/$athleteId': typeof RegistryAthleteIdRoute
+  '/twin/$athleteId': typeof TwinAthleteIdRoute
+  '/workspace/admin': typeof WorkspaceAdminRoute
+  '/workspace/coach': typeof WorkspaceCoachRoute
+  '/workspace/nutritionist': typeof WorkspaceNutritionistRoute
+  '/workspace/physio': typeof WorkspacePhysioRoute
+  '/workspace/scientist': typeof WorkspaceScientistRoute
   '/training/sessions/new': typeof TrainingSessionsNewRoute
 }
 export interface FileRouteTypes {
@@ -151,6 +214,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/assessments'
     | '/copilot'
+    | '/integrations'
     | '/medical'
     | '/nutrition'
     | '/onboarding'
@@ -160,6 +224,12 @@ export interface FileRouteTypes {
     | '/training'
     | '/medical/body-map'
     | '/registry/$athleteId'
+    | '/twin/$athleteId'
+    | '/workspace/admin'
+    | '/workspace/coach'
+    | '/workspace/nutritionist'
+    | '/workspace/physio'
+    | '/workspace/scientist'
     | '/training/sessions/new'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -167,6 +237,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/assessments'
     | '/copilot'
+    | '/integrations'
     | '/medical'
     | '/nutrition'
     | '/onboarding'
@@ -176,6 +247,12 @@ export interface FileRouteTypes {
     | '/training'
     | '/medical/body-map'
     | '/registry/$athleteId'
+    | '/twin/$athleteId'
+    | '/workspace/admin'
+    | '/workspace/coach'
+    | '/workspace/nutritionist'
+    | '/workspace/physio'
+    | '/workspace/scientist'
     | '/training/sessions/new'
   id:
     | '__root__'
@@ -183,6 +260,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/assessments'
     | '/copilot'
+    | '/integrations'
     | '/medical'
     | '/nutrition'
     | '/onboarding'
@@ -192,6 +270,12 @@ export interface FileRouteTypes {
     | '/training'
     | '/medical/body-map'
     | '/registry/$athleteId'
+    | '/twin/$athleteId'
+    | '/workspace/admin'
+    | '/workspace/coach'
+    | '/workspace/nutritionist'
+    | '/workspace/physio'
+    | '/workspace/scientist'
     | '/training/sessions/new'
   fileRoutesById: FileRoutesById
 }
@@ -200,6 +284,7 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute
   AssessmentsRoute: typeof AssessmentsRoute
   CopilotRoute: typeof CopilotRoute
+  IntegrationsRoute: typeof IntegrationsRoute
   MedicalRoute: typeof MedicalRouteWithChildren
   NutritionRoute: typeof NutritionRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -207,6 +292,12 @@ export interface RootRouteChildren {
   RehabRoute: typeof RehabRoute
   SportsScienceRoute: typeof SportsScienceRoute
   TrainingRoute: typeof TrainingRouteWithChildren
+  TwinAthleteIdRoute: typeof TwinAthleteIdRoute
+  WorkspaceAdminRoute: typeof WorkspaceAdminRoute
+  WorkspaceCoachRoute: typeof WorkspaceCoachRoute
+  WorkspaceNutritionistRoute: typeof WorkspaceNutritionistRoute
+  WorkspacePhysioRoute: typeof WorkspacePhysioRoute
+  WorkspaceScientistRoute: typeof WorkspaceScientistRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -260,6 +351,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MedicalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/integrations': {
+      id: '/integrations'
+      path: '/integrations'
+      fullPath: '/integrations'
+      preLoaderRoute: typeof IntegrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/copilot': {
       id: '/copilot'
       path: '/copilot'
@@ -286,6 +384,48 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workspace/scientist': {
+      id: '/workspace/scientist'
+      path: '/workspace/scientist'
+      fullPath: '/workspace/scientist'
+      preLoaderRoute: typeof WorkspaceScientistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workspace/physio': {
+      id: '/workspace/physio'
+      path: '/workspace/physio'
+      fullPath: '/workspace/physio'
+      preLoaderRoute: typeof WorkspacePhysioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workspace/nutritionist': {
+      id: '/workspace/nutritionist'
+      path: '/workspace/nutritionist'
+      fullPath: '/workspace/nutritionist'
+      preLoaderRoute: typeof WorkspaceNutritionistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workspace/coach': {
+      id: '/workspace/coach'
+      path: '/workspace/coach'
+      fullPath: '/workspace/coach'
+      preLoaderRoute: typeof WorkspaceCoachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workspace/admin': {
+      id: '/workspace/admin'
+      path: '/workspace/admin'
+      fullPath: '/workspace/admin'
+      preLoaderRoute: typeof WorkspaceAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/twin/$athleteId': {
+      id: '/twin/$athleteId'
+      path: '/twin/$athleteId'
+      fullPath: '/twin/$athleteId'
+      preLoaderRoute: typeof TwinAthleteIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/registry/$athleteId': {
@@ -352,6 +492,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyticsRoute: AnalyticsRoute,
   AssessmentsRoute: AssessmentsRoute,
   CopilotRoute: CopilotRoute,
+  IntegrationsRoute: IntegrationsRoute,
   MedicalRoute: MedicalRouteWithChildren,
   NutritionRoute: NutritionRoute,
   OnboardingRoute: OnboardingRoute,
@@ -359,17 +500,13 @@ const rootRouteChildren: RootRouteChildren = {
   RehabRoute: RehabRoute,
   SportsScienceRoute: SportsScienceRoute,
   TrainingRoute: TrainingRouteWithChildren,
+  TwinAthleteIdRoute: TwinAthleteIdRoute,
+  WorkspaceAdminRoute: WorkspaceAdminRoute,
+  WorkspaceCoachRoute: WorkspaceCoachRoute,
+  WorkspaceNutritionistRoute: WorkspaceNutritionistRoute,
+  WorkspacePhysioRoute: WorkspacePhysioRoute,
+  WorkspaceScientistRoute: WorkspaceScientistRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

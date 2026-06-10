@@ -27,7 +27,12 @@ function AthleteProfile() {
       <PageHeader
         title={a.name}
         subtitle={`${a.id} · ${stateOf(a).name} › ${academyOf(a).name} › ${teamOf(a).name} · ${a.sport}${a.position ? ` (${a.position})` : ""}`}
-        actions={<Link to="/registry" className="text-[12px] text-muted-foreground hover:text-foreground flex items-center gap-1"><ArrowLeft className="w-3.5 h-3.5" /> Registry</Link>}
+        actions={
+          <div className="flex gap-2 items-center">
+            <Link to="/twin/$athleteId" params={{ athleteId: a.id }} className="text-[12px] text-primary hover:underline">Digital Twin →</Link>
+            <Link to="/registry" className="text-[12px] text-muted-foreground hover:text-foreground flex items-center gap-1"><ArrowLeft className="w-3.5 h-3.5" /> Registry</Link>
+          </div>
+        }
       />
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 p-6">
         <KpiCard label="Readiness" value={ready} unit="/100" tone={ready > 70 ? "ok" : ready > 50 ? "warn" : "bad"} />

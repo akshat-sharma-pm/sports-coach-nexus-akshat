@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Activity, Users, UserPlus, CalendarDays, Dumbbell, Stethoscope,
   PersonStanding, HeartPulse, FlaskConical, Salad, Trophy, BarChart3, Sparkles, Layers,
+  LayoutDashboard, Plug,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -10,6 +11,13 @@ import {
 import { useRole, can } from "@/lib/rbac";
 
 const nav = [
+  { group: "Workspaces", items: [
+    { key: "ws-coach", title: "Coach", url: "/workspace/coach", icon: LayoutDashboard },
+    { key: "ws-scientist", title: "Sports Scientist", url: "/workspace/scientist", icon: LayoutDashboard },
+    { key: "ws-physio", title: "Physio", url: "/workspace/physio", icon: LayoutDashboard },
+    { key: "ws-nutritionist", title: "Nutritionist", url: "/workspace/nutritionist", icon: LayoutDashboard },
+    { key: "ws-admin", title: "Federation Admin", url: "/workspace/admin", icon: LayoutDashboard },
+  ]},
   { group: "Operations", items: [
     { key: "command", title: "AI Command Center", url: "/", icon: Activity },
     { key: "registry", title: "Athlete Registry", url: "/registry", icon: Users },
@@ -29,6 +37,7 @@ const nav = [
   { group: "Support", items: [
     { key: "nutrition", title: "Nutrition", url: "/nutrition", icon: Salad },
     { key: "analytics", title: "Analytics & BI", url: "/analytics", icon: BarChart3 },
+    { key: "integrations", title: "Integrations", url: "/integrations", icon: Plug },
     { key: "copilot", title: "AI Copilot", url: "/copilot", icon: Sparkles },
   ]},
 ];
