@@ -38,10 +38,24 @@ function Registry() {
     <div>
       <PageHeader title="Athlete Registry" subtitle={`${rows.length} of ${athletes.length} athletes`}
         actions={<>
-          <Button size="sm" variant="outline" className="h-8 gap-1"><Filter className="w-3.5 h-3.5" /> Saved views</Button>
-          <Button size="sm" variant="outline" className="h-8 gap-1"><Download className="w-3.5 h-3.5" /> Export</Button>
+          <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => toast.success("Saved view applied: My athletes")}><Filter className="w-3.5 h-3.5" /> Saved views</Button>
+          <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => {
+            const header = ["id","name","sport","team","state","age","readiness","risk","status"].join(",");
+            const lines = rows.map((a) => {
+              const t = teams.find((x) => x.id === a.teamId)!;
+              const ac = academies.find((x) => x.id === t.academyId)!;
+              const st = states.find((x) => x.id === ac.stateId)!;
+              return [a.id,a.name,a.sport,t.name,st.name,a.age,readinessScore(a),injuryRiskScore(a),a.status].join(",");
+            });
+            const blob = new Blob([header + "\n" + lines.join("\n")], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a"); link.href = url; link.download = `athletes-${Date.now()}.csv`; link.click();
+            URL.revokeObjectURL(url);
+            toast.success(`Exported ${rows.length} athletes to CSV`);
+          }}><Download className="w-3.5 h-3.5" /> Export</Button>
         </>}
       />
+
       <div className="px-6 py-3 border-b border-border flex flex-wrap gap-2 items-center">
         <div className="relative">
           <Search className="w-3.5 h-3.5 absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
