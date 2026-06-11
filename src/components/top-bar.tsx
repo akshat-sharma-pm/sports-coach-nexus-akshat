@@ -77,13 +77,29 @@ export function TopBar() {
 
       <div className="flex-1" />
 
-      <div className="relative hidden md:block">
-        <Search className="w-3.5 h-3.5 absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
-        <input
-          placeholder="Search athletes, injuries, sessions…  ⌘K"
-          className="h-7 w-72 pl-7 pr-2 rounded bg-input/60 border border-border text-[12px] outline-none focus:border-primary"
-        />
-      </div>
+      <Popover open={openSearch && matches.length > 0} onOpenChange={setOpenSearch}>
+        <PopoverTrigger asChild>
+          <div className="relative hidden md:block">
+            <Search className="w-3.5 h-3.5 absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              value={query}
+              onChange={(e) => { setQuery(e.target.value); setOpenSearch(true); }}
+              onFocus={() => setOpenSearch(true)}
+              placeholder="Search athletes by name or ID…"
+              className="h-7 w-72 pl-7 pr-2 rounded bg-input/60 border border-border text-[12px] outline-none focus:border-primary"
+            />
+          </div>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-80 p-1" onOpenAutoFocus={(e) => e.preventDefault()}>
+          {matches.map(a => (
+            <button key={a.id} className="w-full flex items-center justify-between gap-2 px-2 py-1.5 text-[12px] rounded hover:bg-accent text-left"
+              onClick={() => { openPanel("athlete", a.id); setOpenSearch(false); setQuery(""); }}>
+              <span className="truncate"><Activity className="w-3 h-3 inline mr-1.5 text-muted-foreground" />{a.name}</span>
+              <span className="font-mono text-[10px] text-muted-foreground">{a.id}</span>
+            </button>
+          ))}
+        </PopoverContent>
+      </Popover>
 
       <Select value={role} onValueChange={(v) => { const r = v as Role; setRole(r); navigate({ to: ROLE_HOME[r] }); }}>
         <SelectTrigger className="h-7 text-[12px] w-44 bg-input/60 border-border">
@@ -94,7 +110,25 @@ export function TopBar() {
         </SelectContent>
       </Select>
 
-      <Button variant="ghost" size="icon" className="h-7 w-7"><Bell className="w-4 h-4" /></Button>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-7 w-7 relative">
+            <Bell className="w-4 h-4" />
+            <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[color:var(--danger)]" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-80 p-2">
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground px-1 pb-2">High-risk alerts</div>
+          {notifications.map(n => (
+            <button key={n.id} className="w-full flex items-start gap-2 px-2 py-1.5 text-[12px] rounded hover:bg-accent text-left"
+              onClick={() => openPanel("athlete", n.id)}>
+              {n.kind === "alert" ? <ShieldAlert className="w-3.5 h-3.5 mt-0.5 text-[color:var(--danger)]" /> : <AlertTriangle className="w-3.5 h-3.5 mt-0.5 text-[color:var(--warning)]" />}
+              <span className="truncate">{n.title}</span>
+            </button>
+          ))}
+        </PopoverContent>
+      </Popover>
+
       <Button asChild variant="outline" size="sm" className="h-7 text-[12px] gap-1">
         <Link to="/copilot"><Sparkles className="w-3.5 h-3.5 text-primary" /> Copilot</Link>
       </Button>
