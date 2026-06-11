@@ -8,7 +8,6 @@ import { useMemo, useState } from "react";
 import { Search, Download, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { injuryRiskScore as _ir, readinessScore as _rd } from "@/lib/ai";
 
 export const Route = createFileRoute("/registry")({
   head: () => ({ meta: [{ title: "Athlete Registry · USI" }] }),
