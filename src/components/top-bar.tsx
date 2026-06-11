@@ -15,17 +15,28 @@ import { injuryRiskScore } from "@/lib/ai";
 export function TopBar() {
   const { role, setRole } = useRole();
   const navigate = useNavigate();
-  const { scope, setScope } = useUI();
+  const { scope, setScope, openPanel } = useUI();
   const fed = federations[0];
-  const state = states.find((s) => s.id === scope.stateId);
-  const academy = academies.find((a) => a.id === scope.academyId);
-  const team = teams.find((t) => t.id === scope.teamId);
+  const [query, setQuery] = useState("");
+  const [openSearch, setOpenSearch] = useState(false);
+
+  const matches = useMemo(() => {
+    if (!query.trim()) return [];
+    const q = query.toLowerCase();
+    return athletes.filter(a => a.name.toLowerCase().includes(q) || a.id.includes(q)).slice(0, 8);
+  }, [query]);
+
+  const notifications = useMemo(() => {
+    const ranked = athletes.map(a => ({ a, r: injuryRiskScore(a) })).sort((x, y) => y.r - x.r).slice(0, 5);
+    return ranked.map(({ a, r }) => ({ id: a.id, title: `${a.name} · risk ${r}`, kind: r >= 65 ? "alert" : "warn" as "alert" | "warn" }));
+  }, []);
 
   return (
     <header className="h-12 border-b border-border bg-sidebar/40 backdrop-blur flex items-center gap-2 px-2 sticky top-0 z-30">
       <SidebarTrigger className="text-muted-foreground" />
       <div className="h-5 w-px bg-border mx-1" />
       <nav className="flex items-center gap-1 text-[12px] text-muted-foreground font-mono">
+
         <span className="text-foreground">{fed.name}</span>
         <ChevronRight className="w-3 h-3 opacity-50" />
         <select
