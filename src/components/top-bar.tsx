@@ -2,11 +2,15 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useRole, ROLES, ROLE_HOME } from "@/lib/rbac";
 import type { Role } from "@/data/seed";
 import { useUI } from "@/store/ui";
-import { federations, states, academies, teams } from "@/data/seed";
-import { ChevronRight, Bell, Search, Sparkles } from "lucide-react";
+import { federations, states, academies, teams, athletes } from "@/data/seed";
+import { ChevronRight, Bell, Search, Sparkles, AlertTriangle, Activity, ShieldAlert } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useState, useMemo } from "react";
+import { injuryRiskScore } from "@/lib/ai";
+
 
 export function TopBar() {
   const { role, setRole } = useRole();
